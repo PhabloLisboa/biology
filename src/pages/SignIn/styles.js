@@ -1,0 +1,14 @@
+export const Style = {
+  container:{
+  	flexDirection:'column',
+  	justifyContent:'center',
+    minHeight:'100vh',
+    background: '#FFEEEE',  /* fallback for old browsers */
+	background: '-webkit-linear-gradient(to right, #DDEFBB, #FFEEEE)',  /* Chrome 10-25, Safari 5.1-6 */
+	background: 'linear-gradient(to right, #DDEFBB, #FFEEEE)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  },
+
+  form:{
+    minWidth: '30vw'
+  }
+}
