@@ -7,7 +7,8 @@ import 'react-quill/dist/quill.snow.css'
 class Editor extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { text: '' } // You can also pass a Quill Delta here
+    this.state = { text: '' }
+    this.quill = React.createRef(); // You can also pass a Quill Delta here
     this.handleChange = this.handleChange.bind(this)
   }
   modules = {
@@ -24,16 +25,25 @@ class Editor extends React.Component {
     ],
   }
 
-
-  handleChange(value) {
+  handleChange(value) {    
     this.setState({ text: value })
   }
-  
+
+  insertComplementation(number){
+    const editor = this.quill.current.makeUnprivilegedEditor(this.quill.current.getEditor())
+    this.quill.current.focus()
+    const cursorPosition = editor.getSelection().index
+    this.quill.current.getEditor().setSelection(cursorPosition + 1)
+    this.quill.current.getEditor().insertText(cursorPosition, `Complementação ${number}`)
+    this.quill.current.getEditor().setSelection(this.quill.current.getEditor().getLength() + 2)
+  }
+
   render() {
     return (
       <ReactQuill value={this.state.text}
                   onChange={this.handleChange}
-                  modules={this.modules}/>
+                  modules={this.modules}
+                  ref={this.quill}/>
     )
   }
 }

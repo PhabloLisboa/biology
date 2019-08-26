@@ -28,6 +28,8 @@ class CreateQuestion extends Component {
 		themeId: '',
 		postId: '',
 		type: 0,
+		alternatives:[],
+		completes:[]
 
 	}
 
@@ -53,44 +55,89 @@ class CreateQuestion extends Component {
 		this.setState({type: value})
 	}
 
+	handleAlternatives(value){
+		let aux = this.state.alternatives
+		aux.push(value)
+		this.setState({alternatives: aux})
+	}
 
-	Create() {
-		const { title, content, themeId, postId, type } = this.state
+	removeAlternative(index){
+		let aux = this.state.alternatives
+		aux.splice(index,1)
+		this.setState({alternatives: aux})
+	}
 
+	handleComplementations(value){
+		let aux = this.state.completes
+		aux.push(value)
+		this.setState({completes: aux})
+		this.editor.insertComplementation(aux.length)
+	}
+
+	removeComplete(index){
+		let aux = this.state.completes
+		aux.splice(index,1)
+		this.setState({completes: aux})
 	}
 
 
 	render() {
 
 		const Alternative = () =>(
-			<div className="row">
-				<div className="input-field col s6 offset-s3">
-				<input id="alternative" type="text" className="validate" />
-				<label htmlFor="alternative">Alternativa</label>
-				</div>
-			</div>
+			this.state.alternatives.map((item, index) =>
+				<div key={index} className="row">
+					<div className="input-field col s6 offset-s3">
+						<input id="alternative" type="text" className="validate" />
+						<label htmlFor="alternative">Alternativa {index+1}</label>
+					</div>
+					<div className="center-align" style={{marginTop:'5%'}}>
+						<a 
+							className="btn-floating btn-medium waves-effect waves-light red"
+							onClick={()=> this.removeAlternative(index)}>
+							<i className="material-icons">clear</i>
+						</a>
+					</div>
+				</div> 
+			)
+			
+		)
+
+		const Completes = () =>(
+			this.state.completes.map((item, index) =>
+				<div key={index} className="row">
+					<div className="input-field col s6 offset-s3">
+						<input id="complete" type="text" className="validate" />
+						<label htmlFor="complete">Complementação {index+1}</label>
+					</div>
+					<div className="center-align" style={{marginTop:'5%'}}>
+						<a 
+							className="btn-floating btn-medium waves-effect waves-light red"
+							onClick={()=> this.removeComplete(index)}>
+							<i className="material-icons">clear</i>
+						</a>
+					</div>
+				</div> 
+			)
+			
 		)
 		const DivType = () =>{
-			if(this.state.type == 1){
-				let i = 0
+			if(this.state.type == 1 || this.state.type == 3){
 				return (
 					<div>
 						<div className="row">
 							<div className="center-align" style={{marginTop:'5%'}}>
 								<a 
 									className="btn-floating btn-medium waves-effect waves-light"
-									onClick={()=> {
-										i++
-										for(let c = 0; c <= i; c++){
-										return	(<Alternative/>)
-										}
-									}}>
+									onClick={()=> this.state.type == 1?
+													this.handleAlternatives(''):
+													this.handleComplementations('')}>
 									<i className="material-icons">add</i>
 								</a>
+								<label style={{marginLeft: '2%'}}>Adicionar Alternativa</label>
 							</div>							
 						</div>
-						<div className="row" id="alternatives">						
-						</div>     					
+						{this.state.type == 1? <Alternative/>:<Completes/>} 			
+											
 					</div>
 				)
 			}
@@ -157,7 +204,7 @@ class CreateQuestion extends Component {
 						</div>
 						<input type="text" hidden></input>
 						<label>Conteúdo</label>
-						<Quill></Quill>
+						<Quill completes={this.state.completes} ref={(ref) => this.editor = ref}></Quill>
 						<DivType />
 						
 		
